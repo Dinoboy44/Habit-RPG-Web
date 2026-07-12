@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Habit RPG</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <header class="hero">
+            <h1>Habit RPG</h1>
+            <h2>Level Up Your Real Life</h2>
+            
+            <!-- Dynamic Quote Hook -->
+            <div class="quote">
+                <p><i>{{ quote }}</i></p>
+            </div>
+            
+            <p class="description">
+                Turn your daily habits into quests. Complete them, earn XP, and become your best self.
+            </p>
+            
+            <div class="btn-group">
+                <a href="/login" class="btn btn-secondary">Login</a>
+                <a href="/register" class="btn btn-primary">Create Account</a>
+            </div>
+        </header>
+
+        <!-- Dynamic RPG Feature Cards -->
+        <section class="features-grid">
+            <div class="feat-card">
+                <span class="feat-icon">🏆</span>
+                <h3>Earn XP</h3>
+                <p>Convert your real-world achievements into hard performance metrics instantly.</p>
+            </div>
+            <div class="feat-card">
+                <span class="feat-icon">⭐</span>
+                <h3>Level Up</h3>
+                <p>Track your progression metrics visually as your personal dashboard values grow.</p>
+            </div>
+            <div class="feat-card">
+                <span class="feat-icon">🎯</span>
+                <h3>Build Better Habits</h3>
+                <p>Break workflows into structured daily tasks that gamify accountability.</p>
+            </div>
+            <div class="feat-card">
+                <span class="feat-icon">💾</span>
+                <h3>Save Progress</h3>
+                <p>Securely save your stats to the cloud database after every complete mission.</p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

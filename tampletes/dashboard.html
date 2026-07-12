@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <form action="/logout" method="get" style="display: inline; margin: 0;">
+                        <button type="submit" style="
+                            background: transparent; 
+                            color: var(--text-secondary); 
+                            border: 1px solid var(--border-color); 
+                            padding: 0.5rem 1.2rem; 
+                            font-size: 0.85rem; 
+                            font-weight: 600; 
+                            border-radius: 50px;
+                            cursor: pointer;
+                            height: 34px;
+                            transition: all 0.2s ease;
+                            text-align: right;"
+                        onmouseover="this.style.backgroundColor='var(--bg-card)'; this.style.color='var(--text-primary)';" 
+                        onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--text-secondary)';">
+                            Logout
+                        </button>
+                    </form>
+    <div class="dashboard-container">
+        
+        <header class="player-hud">
+            <div class="hud-top">
+                <div class="hud-title-group">
+                    <h1>Habit RPG</h1>
+                    <div class="hud-username">{{ user.username }}</div>
+                </div>
+                <div class="hud-badges">
+                    <div class="hud-badge">LEVEL: <span>{{ user.level }}</span></div>
+                    <div class="hud-badge">TOTAL COMPLETED QUEST: <span>{{ user.total_completed_tasks }}</span></div>
+                </div>
+            </div>
+            
+            <div class="xp-hud-bar">
+                <div class="xp-text">
+                    <span>EXPERIENCE PROGRESS</span>
+                    <span>{{ user.xp }} / {{ user.level * 100 }} XP</span>
+                </div>
+                <progress class="hud-progress" value="{{ user.xp }}" max="{{ user.level * 100 }}"></progress>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            
+            <main class="quest-log-section">
+                <h2 class="panel-title">⚔️ Active Quests</h2>
+                
+                <div class="habit-stack">
+                    {% if habits %}
+                        {% for habit in habits %}
+                        <div class="habit-item-card {% if habit.completed %}completed-state{% endif %}">
+                            <div class="habit-details">
+                                <div class="task-headline-row">
+                                    <span class="task-headline">{{ habit.task }}</span>
+                                    <span class="id-tag">#{{ habit.id }}</span>
+                                </div>
+                                <div class="habit-tags-row">
+                                    <span class="badge-tag">Type: <strong>{{ habit.type }}</strong></span>
+                                    <span class="badge-tag">Difficulty: <strong>{{ habit.difficulty }}</strong></span>
+                                    <span class="reward-highlight">Reward: <span>+{{ habit.xp_reward }} XP</span></span>
+                                </div>
+                            </div>
+                            
+                            <div class="actions-cluster" style="display: flex; align-items: center; gap: 0.75rem;">
+                                    {% if habit.completed %}
+                                        <span style="
+                                            display: inline-flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            background: rgba(35, 134, 54, 0.05);
+                                            color: #238636; 
+                                            border: 1px solid rgba(35, 134, 54, 0.4); 
+                                            padding: 0.5rem 1rem; 
+                                            font-size: 0.85rem; 
+                                            font-weight: 700; 
+                                            border-radius: var(--radius-sm);
+                                            height: 34px;
+                                        ">✓ Done</span>
+                                    {% else %}
+                                        <form action="/complete/{{ habit.id }}" method="post" style="display: inline; margin: 0;">
+                                            <button type="submit" style="
+                                                background: transparent; 
+                                                color: #238636; 
+                                                border: 1px solid rgba(35, 134, 54, 0.4); 
+                                                padding: 0.5rem 1rem; 
+                                                font-size: 0.85rem; 
+                                                font-weight: 600; 
+                                                border-radius: var(--radius-sm); 
+                                                cursor: pointer;
+                                                height: 34px;
+                                                transition: all 0.2s ease;
+                                            " onmouseover="this.style.backgroundColor='#238636'; this.style.color='#ffffff';" 
+                                            onmouseout="this.style.backgroundColor='transparent'; this.style.color='#238636';">
+                                                Complete
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                    
+                                    <form action="/delete/{{ habit.id }}" method="post" style="display: inline; margin: 0;">
+                                        <button type="submit" style="
+                                            background: var(--bg-card); 
+                                            color: #f0f6fc; 
+                                            border: 1px solid var(--border-color); 
+                                            padding: 0.5rem 1rem; 
+                                            font-size: 0.85rem; 
+                                            font-weight: 600; 
+                                            border-radius: var(--radius-sm); 
+                                            cursor: pointer;
+                                            height: 34px;
+                                            transition: all 0.2s ease;
+                                        " onmouseover="this.style.backgroundColor='#da3637'; this.style.borderColor='#da3637'; this.style.color='#ffffff';" 
+                                        onmouseout="this.style.backgroundColor='var(--bg-card)'; this.style.borderColor='var(--border-color)'; this.style.color='#f0f6fc';">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <p>No active quests in your logs. Draft a habit on the right to start earning XP!</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </main>
+
+            <aside class="sidebar-panel">
+                <h3 class="panel-title" style="font-size: 1.25rem;">📜 Forge New Quest</h3>
+                
+                <form action="/addhabit" method="post">
+                    <div class="form-group">
+                        <label for="task">Task Name</label>
+                        <input type="text" id="task" name="task" class="form-input" placeholder="e.g., Hit the gym" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="type">Type / Category</label>
+                        <input type="text" id="type" name="type" class="form-input" placeholder="e.g., Health, Coding" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="difficulty">Difficulty Value</label>
+                        <input type="number" id="difficulty" name="difficulty" class="form-input" placeholder="Rate it out of 10" required>
+                    </div>                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Add Quest</button>
+                </form>
+            </aside>
+            
+        </div>
+    </div>
+</body>
+</html>
